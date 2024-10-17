@@ -34,4 +34,6 @@ model Question {
   author User @relation(fields: [authorId], references: [id])
 
   @@map("question")
+  
 }
+
