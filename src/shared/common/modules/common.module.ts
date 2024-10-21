@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { Env } from 'src/env';
+import { Env } from 'src/modules/app/env';
 
 @Module({
   imports: [
@@ -14,15 +14,12 @@ import { Env } from 'src/env';
         const privateKey = config.get('JWT_PRIVATE_KEY', { infer: true });
         const publicKey = config.get('JWT_PUBLIC_KEY', { infer: true });
         return {
-          signOptions: {
-            algorithm: 'RS256',
-          },
+          signOptions: { algorithm: 'RS256' },
           privateKey: Buffer.from(privateKey, 'base64'),
           publicKey: Buffer.from(publicKey, 'base64'),
         };
       },
     }),
   ],
-  exports: [JwtModule],
 })
 export class CommonModule {}

@@ -9,6 +9,10 @@ npm i @types/bcryptjs -D
 npm i zod
 npm i zod-validation-error
 npm i @nestjs/config
+npm i @nestjs/passport passport passport-local
+npm i @types/passport-local -D
+npm i @nestjs/jwt passport-jwt
+npm i @types/passport-jwt -D
 ```
 
 ## Migrates prisma
