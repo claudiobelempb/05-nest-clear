@@ -1,18 +1,29 @@
-import { Controller, Post, UseGuards } from '@nestjs/common'
+import { Body, Controller, Post, UseGuards } from '@nestjs/common'
 import { CurrentUserDecoratior } from 'src/modules/auth/current-user.decorator'
 
-import { PrismaService } from 'src/prisma/prisma.service'
 import { JwtAuthGuard } from 'src/shared/common/guards/jwt-auth.guard'
-import { TokenPayload } from 'src/shared/common/providers/jwt.strategy'
+import { ZodValidationPipe } from 'src/shared/common/pipes/zod-validation-pipe'
+import { UserPayload } from 'src/shared/common/providers/jwt.strategy'
+import { z } from 'zod'
+import { QuestionCreateService } from '../services/question-create.service'
+
+export const CreateQuestionSchema = z.object({
+  title: z.string(),
+  content: z.string(),
+})
+
+export type CreateQuestion = z.infer<typeof CreateQuestionSchema>
 
 @Controller('/questions')
 @UseGuards(JwtAuthGuard)
 export class CreateQuestionController {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly service: QuestionCreateService) {}
 
   @Post()
-  async handle(@CurrentUserDecoratior() user: TokenPayload) {
-    console.log(user)
-    return 'ok'
+  async handle(
+    @Body(new ZodValidationPipe(CreateQuestionSchema)) request: CreateQuestion,
+    @CurrentUserDecoratior() user: UserPayload
+  ): Promise<CreateQuestion> {
+    return this.service.execute(user.sub, request)
   }
 }
